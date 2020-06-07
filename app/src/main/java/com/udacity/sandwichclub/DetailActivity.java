@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -14,6 +15,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+    private static final String UNKNOWN = "Unknown";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI();
+        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
                 .into(ingredientsIv);
@@ -56,7 +58,28 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
+    private void populateUI(Sandwich sandwich) {
+        TextView mainNameTv = findViewById(R.id.main_name_tv);
+        TextView alsoKnownAsTv = findViewById(R.id.also_known_tv);
+        TextView originTv = findViewById(R.id.origin_tv);
+        TextView descriptionTv = findViewById(R.id.description_tv);
+        TextView ingredientsTv = findViewById(R.id.ingredients_tv);
 
+        mainNameTv.setText(sandwich.getMainName());
+
+        StringBuilder alsoKnownAs = new StringBuilder();
+        for (String alsoKnownAsInd : sandwich.getAlsoKnownAs()) {
+            alsoKnownAs.append(alsoKnownAsInd).append("\n");
+        }
+
+        alsoKnownAsTv.setText(alsoKnownAs.toString());
+        originTv.setText(!sandwich.getPlaceOfOrigin().isEmpty() ? sandwich.getPlaceOfOrigin() : UNKNOWN);
+        descriptionTv.setText(sandwich.getDescription());
+
+        StringBuilder ingredients = new StringBuilder();
+        for (String ingredient : sandwich.getIngredients()) {
+            ingredients.append(ingredient).append("\n");
+        }
+        ingredientsTv.setText(ingredients.toString());
     }
 }
