@@ -3,6 +3,7 @@ package com.udacity.sandwichclub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,11 +12,13 @@ import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import java.util.ArrayList;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
-    private static final String UNKNOWN = "Unknown";
+    private static final String UNKNOWN_DETAIL = "Unknown";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,20 +63,16 @@ public class DetailActivity extends AppCompatActivity {
 
     private void populateUI(Sandwich sandwich) {
         TextView mainNameTv = findViewById(R.id.main_name_tv);
-        TextView alsoKnownAsTv = findViewById(R.id.also_known_tv);
         TextView originTv = findViewById(R.id.origin_tv);
         TextView descriptionTv = findViewById(R.id.description_tv);
         TextView ingredientsTv = findViewById(R.id.ingredients_tv);
 
         mainNameTv.setText(sandwich.getMainName());
 
-        StringBuilder alsoKnownAs = new StringBuilder();
-        for (String alsoKnownAsInd : sandwich.getAlsoKnownAs()) {
-            alsoKnownAs.append(alsoKnownAsInd).append("\n");
-        }
+        ArrayList<String> knownNames = (ArrayList<String>) sandwich.getAlsoKnownAs();
+        knownAsList(knownNames);
 
-        alsoKnownAsTv.setText(alsoKnownAs.toString());
-        originTv.setText(!sandwich.getPlaceOfOrigin().isEmpty() ? sandwich.getPlaceOfOrigin() : UNKNOWN);
+        originTv.setText(!sandwich.getPlaceOfOrigin().isEmpty() ? sandwich.getPlaceOfOrigin() : UNKNOWN_DETAIL);
         descriptionTv.setText(sandwich.getDescription());
 
         StringBuilder ingredients = new StringBuilder();
@@ -81,5 +80,22 @@ public class DetailActivity extends AppCompatActivity {
             ingredients.append(ingredient).append("\n");
         }
         ingredientsTv.setText(ingredients.toString());
+    }
+
+    private void knownAsList(ArrayList<String> knownNames){
+        TextView alsoKnown = findViewById(R.id.also_known);
+        TextView alsoKnownAsTv = findViewById(R.id.also_known_tv);
+
+        StringBuilder alsoKnownAs = new StringBuilder();
+
+        for (String alsoKnownAsInd : knownNames) {
+            alsoKnownAs.append(alsoKnownAsInd).append("\n");
+        }
+        if (knownNames.isEmpty()){
+            alsoKnown.setVisibility(View.GONE);
+            alsoKnownAsTv.setVisibility(View.GONE);
+        }
+
+        alsoKnownAsTv.setText(alsoKnownAs.toString());
     }
 }
